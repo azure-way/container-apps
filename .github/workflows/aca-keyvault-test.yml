@@ -18,6 +18,7 @@ jobs:
 
   ValidateAPI:
     runs-on: ubuntu-latest
+    needs: RunTerraform
 
     steps:
       - name: Run API Validation Script
@@ -63,6 +64,7 @@ jobs:
             color: "#3272d3"   
 
   RunDestroyTerraform:
+    needs: ValidateAPI
     uses: ./.github/workflows/terraform-destroy.yml
     with:
       terraform_directory: './container_apps_key_vault/1_terraform'
