@@ -10,7 +10,7 @@ on:
         type: string
 
 jobs:
-  terraform-build:
+  terraform_destroy:
     runs-on: ubuntu-latest
     defaults:
       run:

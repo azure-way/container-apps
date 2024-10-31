@@ -1,5 +1,5 @@
 name: Azure Container Apps - Key Vault test
-run-name: ACA-KV-Test
+run-name: Azure Container Apps - Key Vault test
 
 on:
     schedule:
