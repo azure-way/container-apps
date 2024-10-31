@@ -28,7 +28,7 @@ jobs:
           #!/bin/bash
 
           # Send a GET request to the API
-          RESPONSE=$(curl -s "$APP_URL")
+          RESPONSE=$(curl -s "${{needs.RunTerraform.outputs.app_url}}")
 
           # Check if the response contains the expected text
           if [[ "$RESPONSE" == *"$EXPECTED_RESPONSE"* ]]; then

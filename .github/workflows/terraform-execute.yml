@@ -22,6 +22,8 @@ permissions:
 jobs:
   terraform-build:
     runs-on: ubuntu-latest
+    outputs:
+      app_url: ${{ steps.terraform-outputs.outputs.app_url }}
     defaults:
       run:
         working-directory: ${{ inputs.terraform_directory || './terraform' }}
@@ -62,8 +64,7 @@ jobs:
         continue-on-error: false            
 
       - name: Export Terraform Outputs as Environment Variables
-        env:
-          GITHUB_ENV: $GITHUB_ENV
+        id: terraform-outputs
         run: |
           #!/bin/bash
           # Get all Terraform outputs in JSON format
@@ -72,5 +73,5 @@ jobs:
           for key in $(echo "$OUTPUTS" | jq -r 'keys[]'); do
             value=$(echo "$OUTPUTS" | jq -r ".\"$key\".value")
             # Export the environment variable
-            echo "$key=$value" >> $GITHUB_ENV
+            echo "$key=$value" >> "$GITHUB_OUTPUT"
           done         
