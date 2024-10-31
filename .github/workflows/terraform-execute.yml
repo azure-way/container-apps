@@ -14,13 +14,16 @@ on:
       badge_label: 
         required: true
         type: string
+    outputs:
+      app_url:
+        value: ${{ jobs.terraform_build.outputs.app_url }}
 
 permissions:
   id-token: write
   contents: read        
 
 jobs:
-  terraform-build:
+  terraform_build:
     runs-on: ubuntu-latest
     outputs:
       app_url: ${{ steps.terraformoutputs.outputs.app_url }}
