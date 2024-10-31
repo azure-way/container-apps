@@ -1,0 +1,74 @@
+name: Azure Container Apps - Key Vault test
+run-name: ACA-KV-Test
+
+on:
+    schedule:
+        - cron: "15 06 * * 2"   # <=== Change this value    
+    workflow_dispatch:
+    
+jobs:
+  RunTerraform:
+    uses: ./.github/workflows/terraform-execute.yml
+    with:
+      terraform_directory: './container_apps_key_vault/1_terraform'
+      backend_key: 'aca-keyvault-test'
+      badge_name: 'Azure Container Apps - Key Vault test'
+      badge_label: 'Azure Container Apps - Key Vault test'
+    secrets: inherit
+
+  ValidateAPI:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Run API Validation Script
+        env:
+          EXPECTED_RESPONSE: "text from secret: AzureWayRocks!"
+        run: |
+          #!/bin/bash
+
+          # Send a GET request to the API
+          RESPONSE=$(curl -s "$APP_URL")
+
+          # Check if the response contains the expected text
+          if [[ "$RESPONSE" == *"$EXPECTED_RESPONSE"* ]]; then
+              echo "Success: The response contains the expected text."
+          else
+              echo "Error: The response does not contain the expected text."
+              echo "Received response: $RESPONSE"
+              exit 1
+          fi
+
+      - name: Build-A-Badge-Success
+        if: success()
+        uses: peterrhodesdev/build-a-badge@v1.3.0
+        with:
+            token: ${{ secrets.GITHUB_TOKEN }}
+            filename: ${{ inputs.badge_name }}
+            label: ${{ inputs.badge_label }}
+            message: "build date: ${{ steps.date.outputs.date }}"
+            namedLogo: github
+            labelColor: "#008000"
+            color: "#3272d3"
+  
+      - name: Build-A-Badge-Failure
+        if: failure()
+        uses: peterrhodesdev/build-a-badge@v1.3.0
+        with:
+            token: ${{ secrets.GITHUB_TOKEN }}
+            filename: ${{ inputs.badge_name }}
+            label: ${{ inputs.badge_label }}
+            message: "build date: ${{ steps.date.outputs.date }}"
+            namedLogo: github
+            labelColor: "#FF0000"
+            color: "#3272d3"   
+
+  RunDestroyTerraform:
+    uses: ./.github/workflows/terraform-destroy.yml
+    with:
+      terraform_directory: './container_apps_key_vault/1_terraform'
+      backend_key: 'aca-keyvault-test'
+      badge_name: 'Azure Container Apps - Key Vault test'
+      badge_label: 'Azure Container Apps - Key Vault test'
+    secrets: inherit     
+      
+    
