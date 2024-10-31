@@ -8,12 +8,6 @@ on:
       backend_key:
         required: true
         type: string
-      badge_name:
-        required: true
-        type: string
-      badge_label: 
-        required: true
-        type: string
 
 jobs:
   terraform-build:

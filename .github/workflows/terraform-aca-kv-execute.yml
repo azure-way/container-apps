@@ -8,12 +8,7 @@ on:
       backend_key:
         required: true
         type: string
-      badge_name:
-        required: true
-        type: string
-      badge_label: 
-        required: true
-        type: string
+
     outputs:
       app_url:
         value: ${{ jobs.terraform_build.outputs.app_url }}
@@ -33,10 +28,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Get current date
-        id: date
-        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
 
       - name: Install terraform
         uses: hashicorp/setup-terraform@v3

@@ -6,14 +6,16 @@ on:
         - cron: "15 06 * * 2"   # <=== Change this value    
     workflow_dispatch:
     
+env:
+  BadgeName: 'Azure Container Apps - Key Vault test'
+  BadgeLabel: 'Azure Container Apps - Key Vault test'
+      
 jobs:
   RunTerraform:
-    uses: ./.github/workflows/terraform-execute.yml
+    uses: ./.github/workflows/terraform-aca-kv-execute.yml
     with:
       terraform_directory: './container_apps_key_vault/1_terraform'
       backend_key: 'aca-keyvault-test'
-      badge_name: 'Azure Container Apps - Key Vault test'
-      badge_label: 'Azure Container Apps - Key Vault test'
     secrets: inherit
 
   ValidateAPI:
@@ -42,13 +44,17 @@ jobs:
               exit 1
           fi
 
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"          
+
       - name: Build-A-Badge-Success
         if: success()
         uses: peterrhodesdev/build-a-badge@v1.3.0
         with:
             token: ${{ secrets.GITHUB_TOKEN }}
-            filename: ${{ inputs.badge_name }}
-            label: ${{ inputs.badge_label }}
+            filename: ${{ env.BadgeName}}
+            label: ${{ env.BadgeLabel }}
             message: "build date: ${{ steps.date.outputs.date }}"
             namedLogo: github
             labelColor: "#008000"
@@ -59,8 +65,8 @@ jobs:
         uses: peterrhodesdev/build-a-badge@v1.3.0
         with:
             token: ${{ secrets.GITHUB_TOKEN }}
-            filename: ${{ inputs.badge_name }}
-            label: ${{ inputs.badge_label }}
+            filename: ${{ env.BadgeName}}
+            label: ${{ env.BadgeLabel }}
             message: "build date: ${{ steps.date.outputs.date }}"
             namedLogo: github
             labelColor: "#FF0000"
@@ -72,8 +78,6 @@ jobs:
     with:
       terraform_directory: './container_apps_key_vault/1_terraform'
       backend_key: 'aca-keyvault-test'
-      badge_name: 'Azure Container Apps - Key Vault test'
-      badge_label: 'Azure Container Apps - Key Vault test'
     secrets: inherit     
       
     
