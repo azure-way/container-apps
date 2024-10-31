@@ -7,8 +7,8 @@ on:
     workflow_dispatch:
     
 env:
-  BadgeName: 'Azure Container Apps - Key Vault test'
-  BadgeLabel: 'Azure Container Apps - Key Vault test'
+  BadgeName: 'AzureContainerApps-KeyVault'
+  BadgeLabel: 'AzureContainerApps-KeyVault'
       
 jobs:
   RunTerraform:
