@@ -105,8 +105,8 @@ resource "azurerm_container_app_environment" "app_env" {
   workload_profile {
     name = "Consumption"
     workload_profile_type = "Consumption"
-    maximum_count = 1
-    minimum_count = 1
+    maximum_count = 0
+    minimum_count = 0
   }  
 }
 
@@ -169,4 +169,8 @@ resource "azurerm_container_app" "sampleapi" {
   }
 
   depends_on = [ null_resource.build_docker_image ]
+}
+
+output "app_url" {
+  value = "https://${azurerm_container_app.sampleapi.ingress[0].fqdn}"
 }

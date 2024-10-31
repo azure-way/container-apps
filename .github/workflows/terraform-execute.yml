@@ -57,11 +57,7 @@ jobs:
       - name: Terraform Apply
         id: apply
         run: terraform apply --auto-approve -input=false -var="spn-client-id=${{secrets.SPN_CLIENT_ID}}" -var="spn-client-secret=${{secrets.SPN_CLIENT_SECRET}}" -var="spn-tenant-id=${{secrets.AZURE_TENANT_ID}}" -var="subscription-id=${{secrets.subscription_id}}"
-        continue-on-error: false        
-
-      - name: Terraform init reconfigure
-        run: terraform init -reconfigure -backend-config="access_key=${{secrets.access_key}}" -backend-config="storage_account_name=${{secrets.storage_account_name}}" -backend-config="container_name=${{secrets.container_name}}" -backend-config="key=${{ inputs.backend_key }}"
-        continue-on-error: false            
+        continue-on-error: false          
 
       - name: Export Terraform Outputs as Environment Variables
         id: terraform-outputs

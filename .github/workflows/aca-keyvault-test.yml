@@ -21,6 +21,9 @@ jobs:
     needs: RunTerraform
 
     steps:
+      - name: test
+        run: echo "${{needs.RunTerraform.outputs.app_url}}"
+        
       - name: Run API Validation Script
         env:
           EXPECTED_RESPONSE: "text from secret: AzureWayRocks!"
