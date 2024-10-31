@@ -21,4 +21,7 @@ provider "azurerm" {
   features {}
 
   subscription_id = var.subscription-id
+  client_id       = var.spn-client-id
+  client_secret   = var.spn-client-secret
+  tenant_id       = var.spn-tenant-id
 }
