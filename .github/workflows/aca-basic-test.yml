@@ -9,15 +9,13 @@ on:
 env:
   BadgeName: 'AzureContainerApps-Basic'
   BadgeLabel: 'AzureContainerApps-Basic'
-  TerraformDir: './container_apps_basic_setup'
-  TerraformKey: 'aca-basic-test'
       
 jobs:
   RunTerraform:
     uses: ./.github/workflows/terraform-aca-basic-execute.yml
     with:
-      terraform_directory: ${{ env.TerraformDir }}
-      backend_key: ${{ env.TerraformKey }}
+      terraform_directory: './container_apps_basic_setup'
+      backend_key: 'aca-basic-test'
     secrets: inherit
 
   ValidateAPI:
@@ -79,9 +77,8 @@ jobs:
     needs: ValidateAPI
     uses: ./.github/workflows/terraform-destroy.yml
     with:
-      terraform_directory: ${{ env.TerraformDir }}
-      backend_key: ${{ env.TerraformKey }}
-
+      terraform_directory: './container_apps_basic_setup'
+      backend_key: 'aca-basic-test'
     secrets: inherit     
       
     
