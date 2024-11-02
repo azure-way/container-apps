@@ -33,3 +33,7 @@ variable "la_retenction_days" {
   type    = number
   default = 30
 }
+
+variable "subscription-id" {
+  description = "Azure subscription ID"t
+}

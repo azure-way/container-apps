@@ -1,0 +1,74 @@
+name: Terraform test build
+on:
+  workflow_call:
+    inputs:
+      terraform_directory:
+        required: true
+        type: string
+      backend_key:
+        required: true
+        type: string
+
+    outputs:
+      url_sampleapi: 
+        value: ${{ jobs.terraform_build.outputs.url_sampleapi }}
+      url_sampleapi_dedicated:
+        value: ${{ jobs.terraform_build.outputs.url_sampleapi_dedicated }}
+      url_sampleapi_redis_dedicated:
+        value: ${{ jobs.terraform_build.outputs.url_sampleapi_redis_dedicated }}
+
+permissions:
+  id-token: write
+  contents: read        
+
+jobs:
+  terraform_build:
+    runs-on: ubuntu-latest
+    outputs:
+      url_sampleapi: ${{ steps.terraformoutputs.outputs.url_sampleapi }}
+      url_sampleapi_dedicated: ${{ steps.terraformoutputs.outputs.url_sampleapi_dedicated }}
+      url_sampleapi_redis_dedicated: ${{ steps.terraformoutputs.outputs.url_sampleapi_redis_dedicated }}
+    defaults:
+      run:
+        working-directory: ${{ inputs.terraform_directory || './terraform' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Install Nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      
+      - name: Azure CLI Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.SPN_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.subscription_id }}          
+
+      - name: Terraform Init
+        id: init
+        run: terraform init -backend-config="access_key=${{secrets.access_key}}" -backend-config="storage_account_name=${{secrets.storage_account_name}}" -backend-config="container_name=${{secrets.container_name}}" -backend-config="key=${{ inputs.backend_key }}"
+    
+      - name: Terraform Apply
+        id: apply
+        run: terraform apply --auto-approve -input=false -var="spn-client-id=${{secrets.SPN_CLIENT_ID}}" -var="spn-client-secret=${{secrets.SPN_CLIENT_SECRET}}" -var="spn-tenant-id=${{secrets.AZURE_TENANT_ID}}" -var="subscription-id=${{secrets.subscription_id}}"
+        continue-on-error: false          
+
+      - name: Export Terraform Outputs as Environment Variables
+        id: terraformoutputs
+        run: |
+          #!/bin/bash
+          # Get all Terraform outputs in JSON format
+          OUTPUTS=$(terraform output -json)
+          echo $OUTPUTS
+          # Parse JSON and export each output as an environment variable
+          for key in $(echo "$OUTPUTS" | jq -r 'keys[]'); do
+            value=$(echo "$OUTPUTS" | jq -r ".\"$key\".value")
+            # Export the environment variable
+            echo "$key=$value" >> $GITHUB_OUTPUT
+          done         

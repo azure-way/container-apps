@@ -82,8 +82,8 @@ resource "azurerm_container_app_environment" "app_env" {
   workload_profile {
     name = "Consumption"
     workload_profile_type = "Consumption"
-    maximum_count = 1
-    minimum_count = 1
+    maximum_count = 0
+    minimum_count = 0
   }  
 }
 
@@ -250,4 +250,17 @@ resource "azurerm_container_app" "sampleredis_dedicated" {
   }
 
   depends_on = [null_resource.redis_acr_import]
+}
+
+output "url_sampleapi" {
+  value = "https://${azurerm_container_app.sampleapi.ingress[0].fqdn}"
+}
+output "url_sampleapi_dedicated" {
+  value = "https://${azurerm_container_app.sampleapi_dedicated.ingress[0].fqdn}"
+  
+}
+
+output "url_sampleapi_redis_dedicated" {
+  value = "https://${azurerm_container_app.sampleredis_dedicated.ingress[0].fqdn}"
+  
 }

@@ -1,0 +1,86 @@
+name: Azure Container Apps - Basic setup test
+run-name: Azure Container Apps - Basic setup test
+
+on:
+    schedule:
+        - cron: "15 06 * * 2"   # <=== Change this value    
+    workflow_dispatch:
+    
+env:
+  BadgeName: 'AzureContainerApps-Basic'
+  BadgeLabel: 'AzureContainerApps-Basic'
+  TerraformDir: './container_apps_basic_setup'
+  TerraformKey: 'aca-basic-test'
+      
+jobs:
+  RunTerraform:
+    uses: ./.github/workflows/terraform-aca-basic-execute.yml
+    with:
+      terraform_directory: $TerraformDir
+      backend_key: $TerraformKey
+    secrets: inherit
+
+  ValidateAPI:
+    runs-on: ubuntu-latest
+    needs: RunTerraform
+
+    steps:
+      - name: Run API Validation Script
+        run: |
+          #!/bin/bash
+
+          # Define the URLs to check
+          URLS=(
+            "${{needs.RunTerraform.outputs.url_sampleapi}}"
+            "${{needs.RunTerraform.outputs.url_sampleapi_dedicated}}"
+            "${{needs.RunTerraform.outputs.url_sampleapi_redis_dedicated}}"
+          )
+
+          # Check each URL
+          for URL in "${URLS[@]}"; do
+            HTTP_STATUS=$(curl -o /dev/null -s -w "%{http_code}\n" "$URL")
+            if [ "$HTTP_STATUS" -eq 200 ]; then
+              echo "Success: $URL returned status 200."
+            else
+              echo "Error: $URL returned status $HTTP_STATUS."
+              exit 1
+            fi
+          done
+
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"          
+
+      - name: Build-A-Badge-Success
+        if: success()
+        uses: peterrhodesdev/build-a-badge@v1.3.0
+        with:
+            token: ${{ secrets.GITHUB_TOKEN }}
+            filename: ${{ env.BadgeName}}
+            label: ${{ env.BadgeLabel }}
+            message: "build date: ${{ steps.date.outputs.date }}"
+            namedLogo: github
+            labelColor: "#008000"
+            color: "#3272d3"
+  
+      - name: Build-A-Badge-Failure
+        if: failure()
+        uses: peterrhodesdev/build-a-badge@v1.3.0
+        with:
+            token: ${{ secrets.GITHUB_TOKEN }}
+            filename: ${{ env.BadgeName}}
+            label: ${{ env.BadgeLabel }}
+            message: "build date: ${{ steps.date.outputs.date }}"
+            namedLogo: github
+            labelColor: "#FF0000"
+            color: "#3272d3"   
+
+  RunDestroyTerraform:
+    needs: ValidateAPI
+    uses: ./.github/workflows/terraform-destroy.yml
+    with:
+      terraform_directory: $TerraformDir
+      backend_key: $TerraformKey
+    secrets: inherit     
+      
+    
