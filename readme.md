@@ -11,6 +11,7 @@ This repository contains a series of projects designed to create, configure, and
    - Details steps for using images from Azure Container Registry.
 
 2. **[container_apps_key_vault](./container_apps_key_vault)** - [Azure Container Apps Secrets Management with Terraform](https://azureway.cloud/azure-container-apps-secrets-by-terraform-part-7/)
+    ![Azure Container Apps Key Vault build status](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/wiki/azure-way/terraform-container-apps/AzureContainerApps-KeyVault.md)
    - Demonstrates secure secrets management in Azure Container Apps using Azure Key Vault.
    - Provides a sample application, Terraform scripts for RBAC setup, and GitHub Actions workflow for automated deployment.
    - Utilizes the latest AzureRM provider to streamline integration with Azure Key Vault.
