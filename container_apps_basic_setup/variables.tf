@@ -35,5 +35,17 @@ variable "la_retenction_days" {
 }
 
 variable "subscription-id" {
-  description = "Azure subscription ID"t
+  description = "Azure subscription ID"
+}
+
+variable "spn-client-id" {
+  description = "Client ID of the service principal"
+}
+
+variable "spn-client-secret" {
+  description = "Secret for service principal"
+}
+
+variable "spn-tenant-id" {
+  description = "Tenant ID for service principal"
 }
