@@ -16,8 +16,8 @@ jobs:
   RunTerraform:
     uses: ./.github/workflows/terraform-aca-basic-execute.yml
     with:
-      terraform_directory: $TerraformDir
-      backend_key: $TerraformKey
+      terraform_directory: ${{ env.TerraformDir }}
+      backend_key: ${{ env.TerraformKey }}
     secrets: inherit
 
   ValidateAPI:
@@ -79,8 +79,9 @@ jobs:
     needs: ValidateAPI
     uses: ./.github/workflows/terraform-destroy.yml
     with:
-      terraform_directory: $TerraformDir
-      backend_key: $TerraformKey
+      terraform_directory: ${{ env.TerraformDir }}
+      backend_key: ${{ env.TerraformKey }}
+
     secrets: inherit     
       
     
