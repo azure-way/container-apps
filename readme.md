@@ -6,6 +6,7 @@ This repository contains a series of projects designed to create, configure, and
 ## Directory Structure
 
 1. **[container_apps_basic_setup](./container_apps_basic_setup)** - [Azure Container Apps – Creating using Terraform [Part 1]](https://azureway.cloud/azure-container-apps-creating-using-terraform-part-1/)
+    ![Azure Container Apps Basic build status](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/wiki/azure-way/terraform-container-apps/AzureContainerApps-Basic.md)
    - Explores the basics of creating Azure Container Apps with Terraform.
    - Sets up an environment with Virtual Network integration, Container Registry, and Log Analytics.
    - Details steps for using images from Azure Container Registry.
