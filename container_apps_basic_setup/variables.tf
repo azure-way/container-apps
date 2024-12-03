@@ -1,6 +1,6 @@
 variable "environment" {
   description = "Name of the environment"
-  default     = "test"
+  default     = "exec"
 }
 
 variable "applicationName" {
